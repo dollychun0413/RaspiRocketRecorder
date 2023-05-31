@@ -15,8 +15,9 @@ let videoFile: fs.WriteStream | undefined;
 let logFile: fs.WriteStream | undefined;
 let ffmpeg: FFmpeg | undefined;
 
-// シングルクリックでプロセススタート/ストップ
 if (process.argv[2] === undefined){
+    // PiSugar2のスイッチは起動パラメータがない時のみ行う
+    // PiSugar2のスイッチ1回押しでプロセススタート/ストップ
     psButton.on('single', buttonClickedProcess);
 }
 
@@ -130,6 +131,7 @@ function stopRecordingProcess() {
     logFile?.end();
 }
 
+// プログラム終了時処理
 function finalize(noDestroyGPIO?: boolean) {
     console.log('finalize');
     stopRecordingProcess();
@@ -172,6 +174,7 @@ function onError(e: any) {
     finalize(true);
 }
 
+// 強制終了時や予期せぬ終了時の終了処理
 process.on('SIGINT', () => {
     console.log('SIGINT');
     stopRecordingProcess();
